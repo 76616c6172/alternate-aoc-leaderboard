@@ -18,13 +18,21 @@ def mainpage():
   return(
     Title("Leaderboard"),
     Head(
+      Link(rel='preconnect', href='https://fonts.googleapis.com'),
+      Link(rel='preconnect', href='https://fonts.gstatic.com', crossorigin=''),
+      Link(href='https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap', rel='stylesheet'),
     ),
     Body(
       Div(),
       Div(
-        P("Hi!"),
+        P("SOFT-WHITE", cls='text-[#cccccc]'),
+        P("WHITE"),
+        P("GREEN", cls='text-[#009900]'),
+        P("YELLOW", cls='text-[#ffff66]'),
+        P("ORANGE", cls='text-[#886655]'),
+        P("GREY", cls='text-[#666666]'),
         ),
-      cls='text-base text-white bg-[#0f0f23]'
+      cls='font-scp text-base text-white bg-[#0f0f23]'
     )
   )
 

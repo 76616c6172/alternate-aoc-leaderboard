@@ -559,9 +559,8 @@ video {
   background-color: rgb(15 15 35 / var(--tw-bg-opacity));
 }
 
-.py-8 {
-  padding-top: 2rem;
-  padding-bottom: 2rem;
+.font-scp {
+  font-family: Source Code Pro, monospace;
 }
 
 .text-base {
@@ -569,12 +568,32 @@ video {
   line-height: 1.5rem;
 }
 
-.text-xl {
-  font-size: 1.25rem;
-  line-height: 1.75rem;
-}
-
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.text-\[\#009900\] {
+  --tw-text-opacity: 1;
+  color: rgb(0 153 0 / var(--tw-text-opacity));
+}
+
+.text-\[\#ffff66\] {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 102 / var(--tw-text-opacity));
+}
+
+.text-\[\#886655\] {
+  --tw-text-opacity: 1;
+  color: rgb(136 102 85 / var(--tw-text-opacity));
+}
+
+.text-\[\#666666\] {
+  --tw-text-opacity: 1;
+  color: rgb(102 102 102 / var(--tw-text-opacity));
+}
+
+.text-\[\#cccccc\] {
+  --tw-text-opacity: 1;
+  color: rgb(204 204 204 / var(--tw-text-opacity));
 }
