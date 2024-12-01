@@ -25,8 +25,8 @@ def mainpage():
     Body(
       Div(),
       Div(
-        P("SOFT-WHITE", cls='text-[#cccccc]'),
         P("WHITE"),
+        P("SOFT-WHITE", cls='text-gre'),
         P("GREEN", cls='text-[#009900]'),
         P("YELLOW", cls='text-[#ffff66]'),
         P("ORANGE", cls='text-[#886655]'),

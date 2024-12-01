@@ -9,6 +9,13 @@ module.exports = {
       },
       fontWeight: {
     },
+    colors: {
+      whi: '#cccccc',
+      gre: '#009900',
+      yel: '#ffff66',
+      ora: '#886655',
+      grey: '#666666',
+    },
   }
 },
 }
