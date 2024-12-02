@@ -26,6 +26,7 @@ def mainpage():
       Link(rel='preconnect', href='https://fonts.googleapis.com'),
       Link(rel='preconnect', href='https://fonts.gstatic.com', crossorigin=''),
       Link(href='https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap', rel='stylesheet'),
+      StyleX("css/hide_scrollbar.css"),
     ),
     Body(
       intro(),
@@ -47,6 +48,7 @@ def day(slug: str):
       Link(rel='preconnect', href='https://fonts.googleapis.com'),
       Link(rel='preconnect', href='https://fonts.gstatic.com', crossorigin=''),
       Link(href='https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap', rel='stylesheet'),
+      StyleX("css/hide_scrollbar.css"),
     ),
     Body(
       day_intro(day),
