@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import os, httpx, json
-from sre_constants import IN_LOC_IGNORE
 
 
 from fasthtml.common import *
@@ -158,9 +157,19 @@ def get_completion_times(member, daynum):
 @flexicache()
 def default_leaderboard():
   d = fetch_data()
-  times = L(d['members'].values()).map(get_completion_times, daynum=1).filter()
-  leaderboard = calculate_points(times)
-  board = [ Div(P(f"{i+1})", cls='w-6 text-left pr-2 text-grey'), P(t.name, cls='flex-grow text-whi'), P(f"{t.points}", cls='text-right text-white'), cls='flex items-center space-x-4 py-1') for i, t in enumerate(leaderboard) ]
+  days = set()
+  for member in d['members'].values():
+    days.update(member.get('completion_day_level', {}).keys())
+
+  total_points = {}
+  for day in days:
+    times = L(d['members'].values()).map(get_completion_times, daynum=int(day)).filter()
+    day_leaderboard = calculate_points(times)
+    for entry in day_leaderboard:
+      total_points[entry.name] = total_points.get(entry.name, 0) + entry.points
+
+  final_leaderboard = L(total_points.items()).map(lambda x: AttrDict(name=x[0], points=x[1])).sorted('points', reverse=True)
+  board = [ Div(P(f"{i+1})", cls='w-6 text-left pr-2 text-grey'), P(t.name, cls='flex-grow text-whi'), P(f"{t.points}", cls='text-right text-white'), cls='flex items-center space-x-4 py-1') for i, t in enumerate(final_leaderboard) ]
 
   return (
     Div(
@@ -170,6 +179,7 @@ def default_leaderboard():
   )
 
 def calculate_points(times):
+
     p1_sorted = sorted((t for t in times if t.p1 is not None), key=lambda x: x.p1)
     p2_sorted = sorted((t for t in times if t.p2 is not None), key=lambda x: x.p2)
 
@@ -186,4 +196,4 @@ def calculate_points(times):
 
 # ***** FOR DEBUGING AND DEVELOPMENT
 #
-serve(reload=True)
+serve(reload=False)
