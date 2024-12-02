@@ -109,8 +109,8 @@ def day_intro(day=0):
 
 def navigation_by_day(dsel=0):
   return(
-      A('[1]', href='/day/1', cls=f'{"text-whi" if dsel == 1 else "text-gre"} hover:underline inline'),
-      A('[2]', href='/day/2', cls=f'{"text-whi" if dsel == 2 else "text-gre"} hover:underline inline'),
+      A('[1]', href='/day/1', cls=f'{"text-whi" if dsel == 1 else "text-gre"} hover:underline inline'), P(" ", cls='inline'),
+      A('[2]', href='/day/2', cls=f'{"text-whi" if dsel == 2 else "text-gre"} hover:underline inline'), P(" ", cls='inline'),
       *future_days(),
   )
 
@@ -122,7 +122,7 @@ def part2_time(member, daynum):
 
 
 def duration(t): return AttrDict(name=t.name, duration=t.p2-t.p1)
-def future_days(): return [ Div(f'[{i}]', cls="inline text-grey") for i in range(3, 25) ]
+def future_days(): return [ Div(P(f'[{i}]', cls="inline text-grey"), P(" ",cls='inline'),cls='inline') for i in range(3, 25) ]
 
 @flexicache(time_policy(1000))
 def fetch_data():
@@ -132,7 +132,7 @@ def fetch_data():
 
 def conv_secs(s): return f"{s//60}:{s%60:02d}"
 
-@flexicache()
+@flexicache(time_policy(2000))
 def daily_leaderboard(day=1):
   d = fetch_data()
   times = L(d['members'].values()).map(part2_time, daynum=day).filter()
@@ -146,6 +146,7 @@ def daily_leaderboard(day=1):
     )
   )
 
+@flexicache(time_policy(2000))
 def get_completion_times(member, daynum):
   days = member.get('completion_day_level', {})
   day = days.get(str(daynum), {})
