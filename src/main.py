@@ -64,15 +64,16 @@ def intro():
   return(
     Div(
       P('This is an alternate', cls='inline'),
-      P('solvit', cls='inline text-yel'),
-      P('leaderboard for', cls='inline'),
+      P('Solveit', cls='inline text-yel'),
+      P('Leaderboard', cls='inline text-yel'),
+      P(' for', cls='inline'),
       P('Advent of Code 2024', cls='text-white tpx-1 rounded inline'),
       P('; it is different from the', cls='inline'),
       A('[Global Leaderboard]', href='https://adventofcode.com/2024/leaderboard', cls='text-gre hover:underline inline'),
       Br(),
       Br(),
       Div(
-      P("[Scoring v1]:", cls='inline'),
+      P("[Scoring]:", cls='inline text-white'),
       P("First solve gets 100 points, second 99 etc.. down to 1 point per star, awarded separately for parts 1 and 2.", cls='inline'),
       ),
       Br(),
@@ -89,8 +90,9 @@ def day_intro(day=0):
   return(
     Div(
       P('This is an alternate', cls='inline'),
-      P('solvit', cls='inline text-yel'),
-      P('leaderboard for', cls='inline'),
+      P('Solveit', cls='inline text-yel'),
+      P('Leaderboard', cls='inline text-yel'),
+      P(' for', cls='inline'),
       P('Advent of Code 2024', cls='text-white tpx-1 rounded inline'),
       P('; it is different from the', cls='inline'),
       A('[Global Leaderboard]', href='https://adventofcode.com/2024/leaderboard', cls='text-gre hover:underline inline'),
