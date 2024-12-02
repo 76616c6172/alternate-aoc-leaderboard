@@ -1,4 +1,12 @@
+from pathlib import Path
+
+import os, httpx, json
+from sre_constants import IN_LOC_IGNORE
+
+
 from fasthtml.common import *
+from fastcore.xtras import time
+from fastcore.utils import *
 
 app = FastHTML(hdrs=Link(rel="stylesheet", href="app.css", type="text/css"))
 
@@ -11,8 +19,6 @@ def serve_files(fname:str, ext:str):
     return FileResponse(f'public/{fname}.{ext}')
   return f(fname, ext)
 
-serve(reload=True)
-
 @app.route("/")
 def mainpage():
   return(
@@ -23,16 +29,158 @@ def mainpage():
       Link(href='https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap', rel='stylesheet'),
     ),
     Body(
-      Div(),
+      intro(),
+      Div(cls=''),
       Div(
-        P("WHITE"),
-        P("SOFT-WHITE", cls='text-gre'),
-        P("GREEN", cls='text-[#009900]'),
-        P("YELLOW", cls='text-[#ffff66]'),
-        P("ORANGE", cls='text-[#886655]'),
-        P("GREY", cls='text-[#666666]'),
+        default_leaderboard(),
         ),
-      cls='font-scp text-base text-white bg-[#0f0f23]'
+      cls='font-scp text-base text-whi bg-[#0f0f23] mt-4 pt-4'
     )
   )
 
+@app.route("/day1")
+def day1():
+  return(
+    Title("Leaderboard"),
+    Head(
+      Link(rel='preconnect', href='https://fonts.googleapis.com'),
+      Link(rel='preconnect', href='https://fonts.gstatic.com', crossorigin=''),
+      Link(href='https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap', rel='stylesheet'),
+    ),
+    Body(
+      day_intro(),
+      Div(cls=''),
+      Div(
+        daily_leaderboard(1),
+        ),
+      cls='font-scp text-base text-whi bg-[#0f0f23] mt-4 pt-4'
+    )
+  )
+
+def intro():
+  return(
+    Div(
+      P('This is an alternate', cls='inline'),
+      P('solvit', cls='inline text-yel'),
+      P('leaderboard for', cls='inline'),
+      P('Advent of Code 2024', cls='text-white tpx-1 rounded inline'),
+      P('; it is different from the', cls='inline'),
+      A('[Global Leaderboard]', href='https://adventofcode.com/2024/leaderboard', cls='text-gre hover:underline inline'),
+      Br(),
+      Br(),
+      Div(
+      P("[Scoring v1]:", cls='inline'),
+      P("First solve gets 100 points, second 99 etc.. down to 1 point per star, awarded separately for parts 1 and 2.", cls='inline'),
+      ),
+      Br(),
+      Div(
+        A("2024 ", href='/', cls='inline hover:underline text-whi'),
+        navigation_by_day(),
+        cls='inline'
+      ),
+    cls='w-1/2 max-w-2xl mx-auto text-whi leading-normal p-16 px-4'
+    ),
+)
+
+def day_intro():
+  return(
+    Div(
+      P('This is an alternate', cls='inline'),
+      P('solvit', cls='inline text-yel'),
+      P('leaderboard for', cls='inline'),
+      P('Advent of Code 2024', cls='text-white tpx-1 rounded inline'),
+      P('; it is different from the', cls='inline'),
+      A('[Global Leaderboard]', href='https://adventofcode.com/2024/leaderboard', cls='text-gre hover:underline inline'),
+      Br(),
+      Br(),
+      P("The daily ranking on this leaderboard is based entirely on the time delta between solving the 1st and 2nd problem."),
+      Br(),
+      Div(
+        A("2024 ", href='/', cls='inline hover:underline text-gre'),
+        navigation_by_day(1),
+        cls='inline'
+      ),
+    cls='w-1/2 max-w-2xl mx-auto text-whi leading-normal p-16 px-4'
+    ),
+)
+
+def navigation_by_day(dsel=0):
+  return(
+      A('[1]', href='/day1', cls=f'{"text-whi" if dsel == 1 else "text-gre"} hover:underline inline'),
+      *future_days(),
+  )
+
+
+def part2_time(member, daynum):
+    days = member.get('completion_day_level', {})
+    day = days.get(str(daynum), {})
+    if '2' in day: return AttrDict(name = member['name'], p1 = day['1']['get_star_ts'], p2 = day['2']['get_star_ts'])
+
+
+def duration(t): return AttrDict(name=t.name, duration=t.p2-t.p1)
+def future_days(): return [ Div(f'[{i}]', cls="inline text-grey") for i in range(2, 25) ]
+
+@flexicache(time_policy(1000))
+def fetch_data():
+  url = 'https://adventofcode.com/2024/leaderboard/private/view/3297706.json'
+  r = httpx.get(url, cookies={'session': os.environ['AOC_SESSION']})
+  return r.json()
+
+def conv_secs(s): return f"{s//60}:{s%60:02d}"
+
+@flexicache()
+def daily_leaderboard(day=1):
+  d = fetch_data()
+  times = L(d['members'].values()).map(part2_time, daynum=day).filter()
+  leaderboard = times.map(duration).sorted('duration')
+  board = [ Div(P(f"{i+1})", cls='w-6 text-left pr-2 text-grey'), P(t.name, cls='flex-grow text-whi'), P(f"{conv_secs(t.duration)}", cls='text-right text-white'), cls='flex items-center space-x-4 py-1') for i, t in enumerate(leaderboard) ]
+
+  return (
+    Div(
+      *board,
+      cls='w-full max-w-md mx-auto'
+    )
+  )
+
+def get_completion_times(member, daynum):
+  days = member.get('completion_day_level', {})
+  day = days.get(str(daynum), {})
+
+  p1_time = day.get('1', {}).get('get_star_ts', None) if '1' in day else None
+  p2_time = day.get('2', {}).get('get_star_ts', None) if '2' in day else None
+
+  if p1_time is not None or p2_time is not None:
+    return AttrDict(name=member['name'], p1=p1_time, p2=p2_time)
+
+@flexicache()
+def default_leaderboard():
+  d = fetch_data()
+  times = L(d['members'].values()).map(get_completion_times, daynum=1).filter()
+  leaderboard = calculate_points(times)
+  board = [ Div(P(f"{i+1})", cls='w-6 text-left pr-2 text-grey'), P(t.name, cls='flex-grow text-whi'), P(f"{t.points}", cls='text-right text-white'), cls='flex items-center space-x-4 py-1') for i, t in enumerate(leaderboard) ]
+
+  return (
+    Div(
+      *board,
+      cls='w-full max-w-md mx-auto'
+    )
+  )
+
+def calculate_points(times):
+    p1_sorted = sorted((t for t in times if t.p1 is not None), key=lambda x: x.p1)
+    p2_sorted = sorted((t for t in times if t.p2 is not None), key=lambda x: x.p2)
+
+    points = {}
+    for i, t in enumerate(p1_sorted):
+        points[t.name] = points.get(t.name, 0) + max(100 - i, 1)
+
+    for i, t in enumerate(p2_sorted):
+        points[t.name] = points.get(t.name, 0) + max(100 - i, 1)
+
+    leaderboard = L(points.items()).map(lambda x: AttrDict(name=x[0], points=x[1])).sorted('points', reverse=True)
+    return leaderboard
+
+
+# ***** FOR DEBUGING AND DEVELOPMENT
+#
+serve(reload=True)

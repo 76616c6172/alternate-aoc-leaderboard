@@ -554,9 +554,94 @@ video {
   --tw-contain-style:  ;
 }
 
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mt-4 {
+  margin-top: 1rem;
+}
+
+.inline {
+  display: inline;
+}
+
+.flex {
+  display: flex;
+}
+
+.w-1\/2 {
+  width: 50%;
+}
+
+.w-6 {
+  width: 1.5rem;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.max-w-2xl {
+  max-width: 42rem;
+}
+
+.max-w-md {
+  max-width: 28rem;
+}
+
+.flex-grow {
+  flex-grow: 1;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.space-x-4 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 0;
+  margin-right: calc(1rem * var(--tw-space-x-reverse));
+  margin-left: calc(1rem * calc(1 - var(--tw-space-x-reverse)));
+}
+
+.rounded {
+  border-radius: 0.25rem;
+}
+
 .bg-\[\#0f0f23\] {
   --tw-bg-opacity: 1;
   background-color: rgb(15 15 35 / var(--tw-bg-opacity));
+}
+
+.p-16 {
+  padding: 4rem;
+}
+
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.py-1 {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.pr-2 {
+  padding-right: 0.5rem;
+}
+
+.pt-4 {
+  padding-top: 1rem;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
 }
 
 .font-scp {
@@ -568,24 +653,23 @@ video {
   line-height: 1.5rem;
 }
 
-.text-\[\#009900\] {
+.leading-normal {
+  line-height: 1.5;
+}
+
+.text-gre {
   --tw-text-opacity: 1;
   color: rgb(0 153 0 / var(--tw-text-opacity));
 }
 
-.text-\[\#666666\] {
+.text-grey {
   --tw-text-opacity: 1;
   color: rgb(102 102 102 / var(--tw-text-opacity));
 }
 
-.text-\[\#886655\] {
+.text-whi {
   --tw-text-opacity: 1;
-  color: rgb(136 102 85 / var(--tw-text-opacity));
-}
-
-.text-\[\#ffff66\] {
-  --tw-text-opacity: 1;
-  color: rgb(255 255 102 / var(--tw-text-opacity));
+  color: rgb(204 204 204 / var(--tw-text-opacity));
 }
 
 .text-white {
@@ -593,7 +677,15 @@ video {
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
-.text-gre {
+.text-yel {
   --tw-text-opacity: 1;
-  color: rgb(0 153 0 / var(--tw-text-opacity));
+  color: rgb(255 255 102 / var(--tw-text-opacity));
+}
+
+.filter {
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+
+.hover\:underline:hover {
+  text-decoration-line: underline;
 }
