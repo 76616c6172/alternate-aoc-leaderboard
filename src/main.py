@@ -8,7 +8,7 @@ from fasthtml.common import *
 from fastcore.xtras import time
 from fastcore.utils import *
 
-app = FastHTML(hdrs=Link(rel="stylesheet", href="app.css", type="text/css"))
+app = FastHTML(hdrs=Link(rel="stylesheet", href="../app.css", type="text/css"))
 
 
 @app.route("/{fname:path}.{ext:static}")
@@ -17,8 +17,8 @@ def serve_files(fname:str, ext:str):
   @flexicache(mtime_policy("./public/"))
   def f(fname, ext):
     return FileResponse(f'public/{fname}.{ext}')
-  return f(fname, ext)
 
+  return f(fname, ext)
 @app.route("/")
 def mainpage():
   return(
@@ -38,8 +38,10 @@ def mainpage():
     )
   )
 
-@app.route("/day1")
-def day1():
+@app.route("/day/{slug}")
+def day(slug: str):
+  day = int(slug)
+
   return(
     Title("Leaderboard"),
     Head(
@@ -48,10 +50,10 @@ def day1():
       Link(href='https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap', rel='stylesheet'),
     ),
     Body(
-      day_intro(),
+      day_intro(day),
       Div(cls=''),
       Div(
-        daily_leaderboard(1),
+        daily_leaderboard(day),
         ),
       cls='font-scp text-base text-whi bg-[#0f0f23] mt-4 pt-4'
     )
@@ -82,7 +84,7 @@ def intro():
     ),
 )
 
-def day_intro():
+def day_intro(day=0):
   return(
     Div(
       P('This is an alternate', cls='inline'),
@@ -97,7 +99,7 @@ def day_intro():
       Br(),
       Div(
         A("2024 ", href='/', cls='inline hover:underline text-gre'),
-        navigation_by_day(1),
+        navigation_by_day(day),
         cls='inline'
       ),
     cls='w-1/2 max-w-2xl mx-auto text-whi leading-normal p-16 px-4'
@@ -106,7 +108,8 @@ def day_intro():
 
 def navigation_by_day(dsel=0):
   return(
-      A('[1]', href='/day1', cls=f'{"text-whi" if dsel == 1 else "text-gre"} hover:underline inline'),
+      A('[1]', href='/day/1', cls=f'{"text-whi" if dsel == 1 else "text-gre"} hover:underline inline'),
+      A('[2]', href='/day/2', cls=f'{"text-whi" if dsel == 2 else "text-gre"} hover:underline inline'),
       *future_days(),
   )
 
@@ -118,7 +121,7 @@ def part2_time(member, daynum):
 
 
 def duration(t): return AttrDict(name=t.name, duration=t.p2-t.p1)
-def future_days(): return [ Div(f'[{i}]', cls="inline text-grey") for i in range(2, 25) ]
+def future_days(): return [ Div(f'[{i}]', cls="inline text-grey") for i in range(3, 25) ]
 
 @flexicache(time_policy(1000))
 def fetch_data():
@@ -183,4 +186,4 @@ def calculate_points(times):
 
 # ***** FOR DEBUGING AND DEVELOPMENT
 #
-serve(reload=False)
+serve(reload=True)
