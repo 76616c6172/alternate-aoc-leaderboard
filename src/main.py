@@ -183,4 +183,4 @@ def calculate_points(times):
 
 # ***** FOR DEBUGING AND DEVELOPMENT
 #
-serve(reload=True)
+serve(reload=False)
