@@ -72,7 +72,7 @@ def intro():
       Br(),
       Br(),
       Div(
-      P("[Scoring]:", cls='inline text-white'),
+      P("Scoring:", cls='inline text-white'),
       P("First solve gets 100 points, second 99 etc.. down to 1 point per star, awarded separately for parts 1 and 2.", cls='inline'),
       ),
       Br(),
@@ -97,7 +97,10 @@ def day_intro(day=1):
       A('[Global Leaderboard]', href='https://adventofcode.com/2024/leaderboard', cls='text-gre hover:text-lgre inline'),
       Br(),
       Br(),
-      P("The daily ranking on this leaderboard is based entirely on the time delta between solving the 1st and 2nd problem."),
+      Div(
+      P("Scoring:", cls='inline text-white'),
+      P("The daily ranking on this leaderboard is based entirely on the time delta between solving the 1st and 2nd problem.", cls='inline'),
+      ),
       Br(),
       Div(
         A("2024", href='/', cls='inline text-gre hover:text-lgre text-bold'), P(" ",cls='inline'),
@@ -203,4 +206,4 @@ def calculate_points(times):
 
 # ***** FOR DEBUGING AND DEVELOPMENT
 #
-serve(reload=False)
+serve(reload=True)
