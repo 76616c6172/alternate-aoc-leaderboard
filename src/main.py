@@ -113,6 +113,7 @@ def navigation_by_day(dsel=0):
   return(
       A('[1]', href='/day/1', cls=f'{"text-whi" if dsel == 1 else "text-gre"} hover:underline inline'), P(" ", cls='inline'),
       A('[2]', href='/day/2', cls=f'{"text-whi" if dsel == 2 else "text-gre"} hover:underline inline'), P(" ", cls='inline'),
+      A('[3]', href='/day/3', cls=f'{"text-whi" if dsel == 3 else "text-gre"} hover:underline inline'), P(" ", cls='inline'),
       *future_days(),
   )
 
@@ -124,7 +125,7 @@ def part2_time(member, daynum):
 
 
 def duration(t): return AttrDict(name=t.name, duration=t.p2-t.p1)
-def future_days(): return [ Div(P(f'[{i}]', cls="inline text-grey"), P(" ",cls='inline'),cls='inline') for i in range(3, 25) ]
+def future_days(): return [ Div(P(f'[{i}]', cls="inline text-grey"), P(" ",cls='inline'),cls='inline') for i in range(4, 25) ]
 
 @flexicache(time_policy(1000))
 def fetch_data():
@@ -155,9 +156,10 @@ def get_completion_times(member, daynum):
 
   p1_time = day.get('1', {}).get('get_star_ts', None) if '1' in day else None
   p2_time = day.get('2', {}).get('get_star_ts', None) if '2' in day else None
+  p3_time = day.get('3', {}).get('get_star_ts', None) if '3' in day else None
 
   if p1_time is not None or p2_time is not None:
-    return AttrDict(name=member['name'], p1=p1_time, p2=p2_time)
+    return AttrDict(name=member['name'], p1=p1_time, p2=p2_time, p3=p3_time)
 
 @flexicache()
 def default_leaderboard():
@@ -187,6 +189,7 @@ def calculate_points(times):
 
     p1_sorted = sorted((t for t in times if t.p1 is not None), key=lambda x: x.p1)
     p2_sorted = sorted((t for t in times if t.p2 is not None), key=lambda x: x.p2)
+    p3_sorted = sorted((t for t in times if t.p3 is not None), key=lambda x: x.p3)
 
     points = {}
     for i, t in enumerate(p1_sorted):
