@@ -2,7 +2,6 @@ from pathlib import Path
 
 import os, httpx, json
 
-
 from fasthtml.common import *
 from fastcore.xtras import time
 from fastcore.utils import *
@@ -21,7 +20,7 @@ def serve_files(fname:str, ext:str):
 @app.route("/")
 def mainpage():
   return(
-    Title("Leaderboard"),
+    Title("2024 Leaderboard"),
     Head(
       Link(rel='preconnect', href='https://fonts.googleapis.com'),
       Link(rel='preconnect', href='https://fonts.gstatic.com', crossorigin=''),
@@ -43,7 +42,7 @@ def day(slug: str):
   day = int(slug)
 
   return(
-    Title("Leaderboard"),
+    Title(f"Day {day} Leaderboard"),
     Head(
       Link(rel='preconnect', href='https://fonts.googleapis.com'),
       Link(rel='preconnect', href='https://fonts.gstatic.com', crossorigin=''),
@@ -204,4 +203,4 @@ def calculate_points(times):
 
 # ***** FOR DEBUGING AND DEVELOPMENT
 #
-serve(reload=False)
+serve(reload=True)
