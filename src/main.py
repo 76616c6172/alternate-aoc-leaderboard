@@ -128,6 +128,7 @@ def part2_time(member, daynum):
 
 def duration(t): return AttrDict(name=t.name, duration=t.p2-t.p1)
 def future_days(): return [ Div(P(f'[{i}]', cls="inline text-grey"), P(" ",cls='inline'),cls='inline') for i in range(4, 25) ]
+def conv_secs(s): return f"{s//3600}:{(s%3600)//60:02d}:{s%60:02d}" if s>=3600 else f"{s//60}:{s%60:02d}" if s>=60 else str(s)
 
 @flexicache(time_policy(1000))
 def fetch_data():
@@ -135,7 +136,6 @@ def fetch_data():
   r = httpx.get(url, cookies={'session': os.environ['AOC_SESSION']})
   return r.json()
 
-def conv_secs(s): return f"{s//60}:{s%60:02d}"
 
 @flexicache(time_policy(1000))
 def daily_leaderboard(day=1):
