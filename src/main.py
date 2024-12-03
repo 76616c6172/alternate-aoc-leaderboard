@@ -137,7 +137,7 @@ def fetch_data():
 
 def conv_secs(s): return f"{s//60}:{s%60:02d}"
 
-@flexicache(time_policy(2000))
+@flexicache(time_policy(1000))
 def daily_leaderboard(day=1):
   d = fetch_data()
   times = L(d['members'].values()).map(part2_time, daynum=day).filter()
@@ -151,7 +151,7 @@ def daily_leaderboard(day=1):
     )
   )
 
-@flexicache(time_policy(2000))
+@flexicache(time_policy(1000))
 def get_completion_times(member, daynum):
   days = member.get('completion_day_level', {})
   day = days.get(str(daynum), {})
@@ -206,4 +206,4 @@ def calculate_points(times):
 
 # ***** FOR DEBUGING AND DEVELOPMENT
 #
-serve(reload=True)
+serve(reload=False)
