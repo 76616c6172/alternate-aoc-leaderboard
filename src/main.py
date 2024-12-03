@@ -113,12 +113,14 @@ def day_intro(day=1):
 
 def navigation_by_day(dsel=0):
   return(
+    # TODO: make this dynamic don't hardcode this.
       A('[1]', href='/day/1', cls=f'{"text-whi" if dsel == 1 else "text-gre"} hover:text-lgre inline'), P(" ", cls='inline'),
       A('[2]', href='/day/2', cls=f'{"text-whi" if dsel == 2 else "text-gre"} hover:text-lgre inline'), P(" ", cls='inline'),
       A('[3]', href='/day/3', cls=f'{"text-whi" if dsel == 3 else "text-gre"} hover:text-lgre inline'), P(" ", cls='inline'),
       *future_days(),
   )
 
+# ***** TODO: clean up this messy code below.
 
 def part2_time(member, daynum):
     days = member.get('completion_day_level', {})
@@ -180,7 +182,7 @@ def default_leaderboard():
   final_leaderboard = L(total_points.items()).map(lambda x: AttrDict(name=x[0], points=x[1])).sorted('points', reverse=True)
   board = [ Div(P(f"{i+1})", cls='w-6 text-left pr-2 text-grey'), P(t.name, cls='flex-grow text-whi'), P(f"{t.points}", cls='text-right text-white'), cls='flex items-center space-x-4 py-1') for i, t in enumerate(final_leaderboard) ]
 
-  return (
+  return(
     Div(
       *board,
       cls='w-full max-w-md mx-auto'
@@ -188,11 +190,9 @@ def default_leaderboard():
   )
 
 def calculate_points(times):
-
     p1_sorted = sorted((t for t in times if t.p1 is not None), key=lambda x: x.p1)
     p2_sorted = sorted((t for t in times if t.p2 is not None), key=lambda x: x.p2)
     p3_sorted = sorted((t for t in times if t.p3 is not None), key=lambda x: x.p3)
-
     points = {}
     for i, t in enumerate(p1_sorted):
         points[t.name] = points.get(t.name, 0) + max(100 - i, 1)
