@@ -8,7 +8,6 @@ from fastcore.utils import *
 
 app = FastHTML(hdrs=Link(rel="stylesheet", href="../app.css", type="text/css"))
 
-
 @app.route("/{fname:path}.{ext:static}")
 def serve_files(fname:str, ext:str):
   "production fileserver with caching"
@@ -17,6 +16,7 @@ def serve_files(fname:str, ext:str):
     return FileResponse(f'public/{fname}.{ext}')
 
   return f(fname, ext)
+
 @app.route("/")
 def mainpage():
   return(
@@ -55,7 +55,7 @@ def day(slug: str):
       Div(
         daily_leaderboard(day),
         ),
-      cls='font-scp text-base text-whi bg-[#0f0f23] mt-4 pt-4'
+      cls='font-scp text-whi bg-[#0f0f23] mt-4 pt-4'
     )
   )
 
@@ -68,7 +68,7 @@ def intro():
       P(' for', cls='inline'),
       P('Advent of Code 2024', cls='text-white tpx-1 rounded inline'),
       P('; it is different from the', cls='inline'),
-      A('[Global Leaderboard]', href='https://adventofcode.com/2024/leaderboard', cls='text-gre hover:underline inline'),
+      A('[Global Leaderboard]', href='https://adventofcode.com/2024/leaderboard', cls='text-gre hover:text-lgre inline'),
       Br(),
       Br(),
       Div(
@@ -77,7 +77,7 @@ def intro():
       ),
       Br(),
       Div(
-        A("2024 ", href='/', cls='inline hover:underline text-whi'),
+        A("2024", href='/', cls='inline text-whi text-bold'), P(" ",cls='inline'),
         navigation_by_day(),
         cls='inline'
       ),
@@ -85,7 +85,7 @@ def intro():
     ),
 )
 
-def day_intro(day=0):
+def day_intro(day=1):
   return(
     Div(
       P('This is an alternate', cls='inline'),
@@ -94,13 +94,13 @@ def day_intro(day=0):
       P(' for', cls='inline'),
       P('Advent of Code 2024', cls='text-white tpx-1 rounded inline'),
       P('; it is different from the', cls='inline'),
-      A('[Global Leaderboard]', href='https://adventofcode.com/2024/leaderboard', cls='text-gre hover:underline inline'),
+      A('[Global Leaderboard]', href='https://adventofcode.com/2024/leaderboard', cls='text-gre hover:text-lgre inline'),
       Br(),
       Br(),
       P("The daily ranking on this leaderboard is based entirely on the time delta between solving the 1st and 2nd problem."),
       Br(),
       Div(
-        A("2024 ", href='/', cls='inline hover:underline text-gre'),
+        A("2024", href='/', cls='inline text-gre hover:text-lgre text-bold'), P(" ",cls='inline'),
         navigation_by_day(day),
         cls='inline'
       ),
@@ -110,9 +110,9 @@ def day_intro(day=0):
 
 def navigation_by_day(dsel=0):
   return(
-      A('[1]', href='/day/1', cls=f'{"text-whi" if dsel == 1 else "text-gre"} hover:underline inline'), P(" ", cls='inline'),
-      A('[2]', href='/day/2', cls=f'{"text-whi" if dsel == 2 else "text-gre"} hover:underline inline'), P(" ", cls='inline'),
-      A('[3]', href='/day/3', cls=f'{"text-whi" if dsel == 3 else "text-gre"} hover:underline inline'), P(" ", cls='inline'),
+      A('[1]', href='/day/1', cls=f'{"text-whi" if dsel == 1 else "text-gre"} hover:text-lgre inline'), P(" ", cls='inline'),
+      A('[2]', href='/day/2', cls=f'{"text-whi" if dsel == 2 else "text-gre"} hover:text-lgre inline'), P(" ", cls='inline'),
+      A('[3]', href='/day/3', cls=f'{"text-whi" if dsel == 3 else "text-gre"} hover:text-lgre inline'), P(" ", cls='inline'),
       *future_days(),
   )
 
@@ -203,4 +203,4 @@ def calculate_points(times):
 
 # ***** FOR DEBUGING AND DEVELOPMENT
 #
-serve(reload=True)
+serve(reload=False)

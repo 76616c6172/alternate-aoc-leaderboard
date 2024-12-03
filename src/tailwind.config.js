@@ -12,6 +12,7 @@ module.exports = {
     colors: {
       whi: '#cccccc',
       gre: '#009900',
+      lgre: '#99ff99',
       yel: '#ffff66',
       ora: '#886655',
       grey: '#666666',
