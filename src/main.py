@@ -31,7 +31,7 @@ def mainpage():
       intro(),
       Div(cls=''),
       Div(
-        default_leaderboard(),
+        leaderboard_2024(),
         ),
       cls='font-scp text-base text-whi bg-[#0f0f23] mt-4 pt-4'
     )
@@ -113,38 +113,44 @@ def day_intro(day=1):
 
 def navigation_by_day(dsel=0):
   return(
-    # TODO: make this dynamic don't hardcode this.
+    # TODO: make this dynamic don't hardcode this. Can just get days from the data.
       A('[1]', href='/day/1', cls=f'{"text-whi" if dsel == 1 else "text-gre"} hover:text-lgre inline'), P(" ", cls='inline'),
       A('[2]', href='/day/2', cls=f'{"text-whi" if dsel == 2 else "text-gre"} hover:text-lgre inline'), P(" ", cls='inline'),
       A('[3]', href='/day/3', cls=f'{"text-whi" if dsel == 3 else "text-gre"} hover:text-lgre inline'), P(" ", cls='inline'),
+      A('[4]', href='/day/4', cls=f'{"text-whi" if dsel == 4 else "text-gre"} hover:text-lgre inline'), P(" ", cls='inline'),
+      A('[5]', href='/day/5', cls=f'{"text-whi" if dsel == 5 else "text-gre"} hover:text-lgre inline'), P(" ", cls='inline'),
       *future_days(),
   )
 
 # ***** TODO: clean up this messy code below.
 
-def part2_time(member, daynum):
-    days = member.get('completion_day_level', {})
-    day = days.get(str(daynum), {})
-    if '2' in day: return AttrDict(name = member['name'], p1 = day['1']['get_star_ts'], p2 = day['2']['get_star_ts'])
 
 
+# GOOD
 def duration(t): return AttrDict(name=t.name, duration=t.p2-t.p1)
-def future_days(): return [ Div(P(f'[{i}]', cls="inline text-grey"), P(" ",cls='inline'),cls='inline') for i in range(4, 25) ]
+def future_days(): return [ Div(P(f'[{i}]', cls="inline text-grey"), P(" ",cls='inline'),cls='inline') for i in range(6, 25) ]
 def conv_secs(s): return f"{s//3600}:{(s%3600)//60:02d}:{s%60:02d}" if s>=3600 else f"{s//60}:{s%60:02d}" if s>=60 else str(s)
 
+# GOOD
 @flexicache(time_policy(1000))
 def fetch_data():
   url = 'https://adventofcode.com/2024/leaderboard/private/view/3297706.json'
   r = httpx.get(url, cookies={'session': os.environ['AOC_SESSION']})
   return r.json()
 
+# GOOD
+def part2_time(member, daynum):
+    days = member.get('completion_day_level', {})
+    day = days.get(str(daynum), {})
+    if '2' in day: return AttrDict(name = member['name'], p1 = day['1']['get_star_ts'], p2 = day['2']['get_star_ts'])
 
+# GOOD
 @flexicache(time_policy(1000))
 def daily_leaderboard(day=1):
   d = fetch_data()
   times = L(d['members'].values()).map(part2_time, daynum=day).filter()
   leaderboard = times.map(duration).sorted('duration')
-  board = [ Div(P(f"{i+1})", cls='w-6 text-left pr-2 text-grey'), P(t.name, cls='flex-grow text-whi'), P(f"{conv_secs(t.duration)}", cls='text-right text-white'), cls='flex items-center space-x-4 py-1') for i, t in enumerate(leaderboard) ]
+  board = [ Div(P(f"{i+1})", cls='w-6 text-left pr-2 text-grey'), P(t.name if t.name else '(anonymous user)', cls='flex-grow text-whi'), P(f"{conv_secs(t.duration)}", cls='text-right text-white'), cls='flex items-center space-x-4 py-1') for i, t in enumerate(leaderboard) ]
 
   return (
     Div(
@@ -153,6 +159,7 @@ def daily_leaderboard(day=1):
     )
   )
 
+# TODO: REFACTOR ME
 @flexicache(time_policy(1000))
 def get_completion_times(member, daynum):
   days = member.get('completion_day_level', {})
@@ -161,12 +168,15 @@ def get_completion_times(member, daynum):
   p1_time = day.get('1', {}).get('get_star_ts', None) if '1' in day else None
   p2_time = day.get('2', {}).get('get_star_ts', None) if '2' in day else None
   p3_time = day.get('3', {}).get('get_star_ts', None) if '3' in day else None
+  p4_time = day.get('4', {}).get('get_star_ts', None) if '4' in day else None
+  p5_time = day.get('5', {}).get('get_star_ts', None) if '5' in day else None
 
   if p1_time is not None or p2_time is not None:
-    return AttrDict(name=member['name'], p1=p1_time, p2=p2_time, p3=p3_time)
+    return AttrDict(name=member['name'], p1=p1_time, p2=p2_time, p3=p3_time, p4=p4_time, p5=p5_time)
 
+# TODO: REFACTOR ME
 @flexicache()
-def default_leaderboard():
+def leaderboard_2024():
   d = fetch_data()
   days = set()
   for member in d['members'].values():
@@ -176,11 +186,10 @@ def default_leaderboard():
   for day in days:
     times = L(d['members'].values()).map(get_completion_times, daynum=int(day)).filter()
     day_leaderboard = calculate_points(times)
-    for entry in day_leaderboard:
-      total_points[entry.name] = total_points.get(entry.name, 0) + entry.points
+    for entry in day_leaderboard: total_points[entry.name] = total_points.get(entry.name, 0) + entry.points
 
   final_leaderboard = L(total_points.items()).map(lambda x: AttrDict(name=x[0], points=x[1])).sorted('points', reverse=True)
-  board = [ Div(P(f"{i+1})", cls='w-6 text-left pr-2 text-grey'), P(t.name, cls='flex-grow text-whi'), P(f"{t.points}", cls='text-right text-white'), cls='flex items-center space-x-4 py-1') for i, t in enumerate(final_leaderboard) ]
+  board = [ Div(P(f"{i+1})", cls='w-6 text-left pr-2 text-grey'), P(t.name if t.name else "(anonymous user)", cls='flex-grow text-whi'), P(f"{t.points}", cls='text-right text-white'), cls='flex items-center space-x-4 py-1') for i, t in enumerate(final_leaderboard) ]
 
   return(
     Div(
@@ -189,21 +198,24 @@ def default_leaderboard():
     )
   )
 
+# TODO: REFACTOR ME
 def calculate_points(times):
     p1_sorted = sorted((t for t in times if t.p1 is not None), key=lambda x: x.p1)
     p2_sorted = sorted((t for t in times if t.p2 is not None), key=lambda x: x.p2)
     p3_sorted = sorted((t for t in times if t.p3 is not None), key=lambda x: x.p3)
-    points = {}
-    for i, t in enumerate(p1_sorted):
-        points[t.name] = points.get(t.name, 0) + max(100 - i, 1)
+    p4_sorted = sorted((t for t in times if t.p4 is not None), key=lambda x: x.p4)
+    p5_sorted = sorted((t for t in times if t.p5 is not None), key=lambda x: x.p5)
 
-    for i, t in enumerate(p2_sorted):
-        points[t.name] = points.get(t.name, 0) + max(100 - i, 1)
+    points = {}
+    for i, t in enumerate(p1_sorted): points[t.name] = points.get(t.name, 0) + max(100 - i, 1)
+    for i, t in enumerate(p2_sorted): points[t.name] = points.get(t.name, 0) + max(100 - i, 1)
+    for i, t in enumerate(p3_sorted): points[t.name] = points.get(t.name, 0) + max(100 - i, 1)
+    for i, t in enumerate(p4_sorted): points[t.name] = points.get(t.name, 0) + max(100 - i, 1)
+    for i, t in enumerate(p5_sorted): points[t.name] = points.get(t.name, 0) + max(100 - i, 1)
 
     leaderboard = L(points.items()).map(lambda x: AttrDict(name=x[0], points=x[1])).sorted('points', reverse=True)
     return leaderboard
 
 
 # ***** FOR DEBUGING AND DEVELOPMENT
-#
-serve(reload=False)
+serve(reload=True)
