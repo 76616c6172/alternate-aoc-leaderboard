@@ -9,6 +9,11 @@ module.exports = {
       },
       fontWeight: {
     },
+    fontSize: {
+      // This will globally adjust the base text size
+        base: ['1rem', { lineHeight: '1.2' }],// Increased from the default 16px
+      // You can also specify line height separately
+    },
     colors: {
       whi: '#cccccc',
       gre: '#009900',

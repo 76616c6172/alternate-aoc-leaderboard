@@ -1,9 +1,6 @@
-from pathlib import Path
-
-import os, httpx, json
+import os, httpx
 
 from fasthtml.common import *
-from fastcore.xtras import time
 from fastcore.utils import *
 
 app = FastHTML(hdrs=Link(rel="stylesheet", href="../app.css", type="text/css"))
@@ -19,7 +16,7 @@ def serve_files(fname:str, ext:str):
 
 @app.route("/")
 def mainpage():
-  return(
+  return (
     Title("2024 Leaderboard"),
     Head(
       Link(rel='preconnect', href='https://fonts.googleapis.com'),
@@ -33,7 +30,8 @@ def mainpage():
       Div(
         leaderboard_2024(),
         ),
-      cls='font-scp text-base text-whi bg-[#0f0f23] mt-4 pt-4'
+      Div(cls=''),
+      cls='font-scp text-base text-whi bg-[#0f0f23] mt-4 pt-4',
     )
   )
 
@@ -41,7 +39,7 @@ def mainpage():
 def day(slug: str):
   day = int(slug)
 
-  return(
+  return (
     Title(f"Day {day} Leaderboard"),
     Head(
       Link(rel='preconnect', href='https://fonts.googleapis.com'),
@@ -55,29 +53,38 @@ def day(slug: str):
       Div(
         daily_leaderboard(day),
         ),
-      cls='font-scp text-whi bg-[#0f0f23] mt-4 pt-4'
+      Div(cls=''),
+      cls='font-scp text-base text-whi bg-[#0f0f23] mt-4 pt-4'
     )
   )
 
 def intro():
-  return(
+  return (
     Div(
-      P('This is an alternate', cls='inline'),
-      P('Solveit', cls='inline text-yel'),
-      P('Leaderboard', cls='inline text-yel'),
-      P(' for', cls='inline'),
-      P('Advent of Code 2024', cls='text-white tpx-1 rounded inline'),
-      P('; it is different from the', cls='inline'),
-      A('[Global Leaderboard]', href='https://adventofcode.com/2024/leaderboard', cls='text-gre hover:text-lgre inline'),
-      Br(),
-      Br(),
+      #P('This is an alternate', cls='inline'),
+      #P('Solveit', cls='inline text-yel'),
+      #P('Leaderboard', cls='inline text-yel'),
+      #P(' for', cls='inline'),
+      #P('Advent of Code 2024', cls='text-white tpx-1 rounded inline'),
+      #P('; it is different from the', cls='inline'),
+      #A('[Global Leaderboard]', href='https://adventofcode.com/2024/leaderboard', cls='text-gre hover:text-lgre inline'),
+      #Br(),
+      #Br(),
+      #Div(
+      #P("Scoring:", cls='inline text-white'),
+      #P("First solve gets 100 points, second 99 etc.. down to 1 point per star, awarded separately for parts 1 and 2.", cls='inline'),
+      #),
+      #Br(),
       Div(
-      P("Scoring:", cls='inline text-white'),
-      P("First solve gets 100 points, second 99 etc.. down to 1 point per star, awarded separately for parts 1 and 2.", cls='inline'),
-      ),
-      Br(),
-      Div(
-        A("2024", href='/', cls='inline text-whi text-bold'), P(" ",cls='inline'),
+        Div(
+
+        A(
+          P("Y(",cls='inline text-gre group-hover:text-lgre'), P('2024', cls='inline text-lgre group-hover:text-lgre'), P(')',cls='inline text-gre group-hover:text-lgre'),
+          href='/', cls='inline text-gre hover:text-lgre text-bold group text-bold'
+          ),
+
+          cls='inline hover:text-lgre'
+        ),
         navigation_by_day(),
         cls='inline'
       ),
@@ -86,24 +93,28 @@ def intro():
 )
 
 def day_intro(day=1):
-  return(
+  return (
     Div(
-      P('This is an alternate', cls='inline'),
-      P('Solveit', cls='inline text-yel'),
-      P('Leaderboard', cls='inline text-yel'),
-      P(' for', cls='inline'),
-      P('Advent of Code 2024', cls='text-white tpx-1 rounded inline'),
-      P('; it is different from the', cls='inline'),
-      A('[Global Leaderboard]', href='https://adventofcode.com/2024/leaderboard', cls='text-gre hover:text-lgre inline'),
-      Br(),
-      Br(),
+      #P('This is an alternate', cls='inline'),
+      #P('Solveit', cls='inline text-yel'),
+      #P('Leaderboard', cls='inline text-yel'),
+      #P(' for', cls='inline'),
+      #P('Advent of Code 2024', cls='text-white tpx-1 rounded inline'),
+      #P('; it is different from the', cls='inline'),
+      #A('[Global Leaderboard]', href='https://adventofcode.com/2024/leaderboard', cls='text-gre hover:text-lgre inline'),
+      #Br(),
+      #Br(),
+      #Div(
+      #P("Scoring:", cls='inline text-white'),
+      #P("The daily ranking on this leaderboard is based entirely on the time delta between solving the 1st and 2nd problem.", cls='inline'),
+      #),
+      #Br(),
       Div(
-      P("Scoring:", cls='inline text-white'),
-      P("The daily ranking on this leaderboard is based entirely on the time delta between solving the 1st and 2nd problem.", cls='inline'),
-      ),
-      Br(),
-      Div(
-        A("2024", href='/', cls='inline text-gre hover:text-lgre text-bold'), P(" ",cls='inline'),
+        A(
+          P("Y(",cls='inline text-gre group-hover:text-lgre'), P('2024', cls='inline text-lgre group-hover:text-lgre'), P(')',cls='inline text-gre group-hover:text-lgre'),
+          href='/', cls='inline text-gre hover:text-lgre text-bold group text-bold'
+          ),
+        # P(" ",cls='inline'),
         navigation_by_day(day),
         cls='inline'
       ),
@@ -112,23 +123,32 @@ def day_intro(day=1):
 )
 
 def navigation_by_day(dsel=0):
-  return(
+  return (
+    Div(
     # TODO: make this dynamic don't hardcode this. Can just get days from the data.
       A('[1]', href='/day/1', cls=f'{"text-whi" if dsel == 1 else "text-gre"} hover:text-lgre inline'), P(" ", cls='inline'),
       A('[2]', href='/day/2', cls=f'{"text-whi" if dsel == 2 else "text-gre"} hover:text-lgre inline'), P(" ", cls='inline'),
       A('[3]', href='/day/3', cls=f'{"text-whi" if dsel == 3 else "text-gre"} hover:text-lgre inline'), P(" ", cls='inline'),
       A('[4]', href='/day/4', cls=f'{"text-whi" if dsel == 4 else "text-gre"} hover:text-lgre inline'), P(" ", cls='inline'),
       A('[5]', href='/day/5', cls=f'{"text-whi" if dsel == 5 else "text-gre"} hover:text-lgre inline'), P(" ", cls='inline'),
+      A('[6]', href='/day/6', cls=f'{"text-whi" if dsel == 6 else "text-gre"} hover:text-lgre inline'), P(" ", cls='inline'),
+      A('[7]', href='/day/7', cls=f'{"text-whi" if dsel == 7 else "text-gre"} hover:text-lgre inline'), P(" ", cls='inline'),
+      A('[8]', href='/day/8', cls=f'{"text-whi" if dsel == 8 else "text-gre"} hover:text-lgre inline'), P(" ", cls='inline'),
+      A('[9]', href='/day/9', cls=f'{"text-whi" if dsel == 9 else "text-gre"} hover:text-lgre inline'), P(" ", cls='inline'),
+      A('[10]', href='/day/10', cls=f'{"text-whi" if dsel == 10 else "text-gre"} hover:text-lgre inline'), P(" ", cls='inline'),
+      A('[11]', href='/day/11', cls=f'{"text-whi" if dsel == 11 else "text-gre"} hover:text-lgre inline'), P(" ", cls='inline'),
+      A('[12]', href='/day/12', cls=f'{"text-whi" if dsel == 12 else "text-gre"} hover:text-lgre inline'), P(" ", cls='inline'),
       *future_days(),
+    cls='inline text-base',
+    )
   )
 
 # ***** TODO: clean up this messy code below.
-
-
+# # testing
 
 # GOOD
 def duration(t): return AttrDict(name=t.name, duration=t.p2-t.p1)
-def future_days(): return [ Div(P(f'[{i}]', cls="inline text-grey"), P(" ",cls='inline'),cls='inline') for i in range(6, 25) ]
+def future_days(): return [ Div(P(f'[{i}]', cls="inline text-grey"), P(" ",cls='inline'),cls='inline') for i in range(13, 26) ]
 def conv_secs(s): return f"{s//3600}:{(s%3600)//60:02d}:{s%60:02d}" if s>=3600 else f"{s//60}:{s%60:02d}" if s>=60 else str(s)
 
 # GOOD
@@ -150,8 +170,8 @@ def daily_leaderboard(day=1):
   d = fetch_data()
   times = L(d['members'].values()).map(part2_time, daynum=day).filter()
   leaderboard = times.map(duration).sorted('duration')
-  board = [ Div(P(f"{i+1})", cls='w-6 text-left pr-2 text-grey'), P(t.name if t.name else '(anonymous user)', cls='flex-grow text-whi'), P(f"{conv_secs(t.duration)}", cls='text-right text-white'), cls='flex items-center space-x-4 py-1') for i, t in enumerate(leaderboard) ]
-
+  board = [ Div(P(f"{i+1})", cls='w-6 text-left pr-2 text-grey'), P(t.name or '(anonymous user)', cls='flex-grow text-grey hover:text-whi'), P(f"{conv_secs(t.duration)}",
+            cls='text-right text-whi'), cls='flex items-center space-x-4 py-1') for i, t in enumerate(leaderboard) ]
   return (
     Div(
       *board,
@@ -170,9 +190,16 @@ def get_completion_times(member, daynum):
   p3_time = day.get('3', {}).get('get_star_ts', None) if '3' in day else None
   p4_time = day.get('4', {}).get('get_star_ts', None) if '4' in day else None
   p5_time = day.get('5', {}).get('get_star_ts', None) if '5' in day else None
+  p6_time = day.get('6', {}).get('get_star_ts', None) if '6' in day else None
+  p7_time = day.get('7', {}).get('get_star_ts', None) if '7' in day else None
+  p8_time = day.get('8', {}).get('get_star_ts', None) if '8' in day else None
+  p9_time = day.get('9', {}).get('get_star_ts', None) if '9' in day else None
+  p10_time = day.get('10', {}).get('get_star_ts', None) if '10' in day else None
+  p11_time = day.get('11', {}).get('get_star_ts', None) if '11' in day else None
+  p12_time = day.get('12', {}).get('get_star_ts', None) if '12' in day else None
 
   if p1_time is not None or p2_time is not None:
-    return AttrDict(name=member['name'], p1=p1_time, p2=p2_time, p3=p3_time, p4=p4_time, p5=p5_time)
+    return AttrDict(name=member['name'], p1=p1_time, p2=p2_time, p3=p3_time, p4=p4_time, p5=p5_time, p6=p6_time, p7=p7_time, p8=p8_time, p9=p9_time, p10=p10_time, p11=p11_time, p12=p12_time)
 
 # TODO: REFACTOR ME
 @flexicache()
@@ -189,9 +216,9 @@ def leaderboard_2024():
     for entry in day_leaderboard: total_points[entry.name] = total_points.get(entry.name, 0) + entry.points
 
   final_leaderboard = L(total_points.items()).map(lambda x: AttrDict(name=x[0], points=x[1])).sorted('points', reverse=True)
-  board = [ Div(P(f"{i+1})", cls='w-6 text-left pr-2 text-grey'), P(t.name if t.name else "(anonymous user)", cls='flex-grow text-whi'), P(f"{t.points}", cls='text-right text-white'), cls='flex items-center space-x-4 py-1') for i, t in enumerate(final_leaderboard) ]
+  board = [ Div(P(f"{i})", cls='w-6 text-left pr-2 text-grey'), P(t.name, cls='flex-grow text-grey hover:text-whi'), P(f"{t.points}", cls='text-right text-whi'), cls='flex items-center space-x-4 py-1') if t.name else None for i, t in enumerate(final_leaderboard) ]
 
-  return(
+  return (
     Div(
       *board,
       cls='w-full max-w-md mx-auto'
@@ -205,6 +232,13 @@ def calculate_points(times):
     p3_sorted = sorted((t for t in times if t.p3 is not None), key=lambda x: x.p3)
     p4_sorted = sorted((t for t in times if t.p4 is not None), key=lambda x: x.p4)
     p5_sorted = sorted((t for t in times if t.p5 is not None), key=lambda x: x.p5)
+    p6_sorted = sorted((t for t in times if t.p6 is not None), key=lambda x: x.p6)
+    p7_sorted = sorted((t for t in times if t.p7 is not None), key=lambda x: x.p7)
+    p8_sorted = sorted((t for t in times if t.p8 is not None), key=lambda x: x.p8)
+    p9_sorted = sorted((t for t in times if t.p9 is not None), key=lambda x: x.p9)
+    p10_sorted = sorted((t for t in times if t.p10 is not None), key=lambda x: x.p10)
+    p11_sorted = sorted((t for t in times if t.p11 is not None), key=lambda x: x.p11)
+    p12_sorted = sorted((t for t in times if t.p12 is not None), key=lambda x: x.p12)
 
     points = {}
     for i, t in enumerate(p1_sorted): points[t.name] = points.get(t.name, 0) + max(100 - i, 1)
@@ -212,10 +246,17 @@ def calculate_points(times):
     for i, t in enumerate(p3_sorted): points[t.name] = points.get(t.name, 0) + max(100 - i, 1)
     for i, t in enumerate(p4_sorted): points[t.name] = points.get(t.name, 0) + max(100 - i, 1)
     for i, t in enumerate(p5_sorted): points[t.name] = points.get(t.name, 0) + max(100 - i, 1)
+    for i, t in enumerate(p6_sorted): points[t.name] = points.get(t.name, 0) + max(100 - i, 1)
+    for i, t in enumerate(p7_sorted): points[t.name] = points.get(t.name, 0) + max(100 - i, 1)
+    for i, t in enumerate(p8_sorted): points[t.name] = points.get(t.name, 0) + max(100 - i, 1)
+    for i, t in enumerate(p9_sorted): points[t.name] = points.get(t.name, 0) + max(100 - i, 1)
+    for i, t in enumerate(p10_sorted): points[t.name] = points.get(t.name, 0) + max(100 - i, 1)
+    for i, t in enumerate(p11_sorted): points[t.name] = points.get(t.name, 0) + max(100 - i, 1)
+    for i, t in enumerate(p12_sorted): points[t.name] = points.get(t.name, 0) + max(100 - i, 1)
 
     leaderboard = L(points.items()).map(lambda x: AttrDict(name=x[0], points=x[1])).sorted('points', reverse=True)
     return leaderboard
 
 
 # ***** FOR DEBUGING AND DEVELOPMENT
-serve(reload=True)
+serve(reload=False)
